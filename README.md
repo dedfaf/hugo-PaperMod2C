@@ -4,15 +4,19 @@ This repository is created to apply the changes from [pull request #675](https:/
 
 Additionally, I’ve added a feature for a large image on the homepage (For personal use). Add 
 
-```
+``` yaml
 params:
   ...
 
   homeInfoParams:
     Title: ...
     Content: ...
-    Image: "Your Image Url Here"
+    Image: "Your Image URL Here"
 
 ```
 
 in `hugo.yaml` (or other formats) to enable it.
+
+## Install & Details
+
+check <https://adityatelange.github.io/hugo-PaperMod/>, you only need to change the submodule URL to this repo.
