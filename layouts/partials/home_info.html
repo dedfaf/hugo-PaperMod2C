@@ -13,7 +13,8 @@
             <h1 style="color: rgb(255, 255, 255, 0.8) !important;">{{ .Title | markdownify }}</h1>
         </header>
         <div class="entry-content" style="color: rgb(255, 255, 255, 0.8) !important;">
-            {{ .Content | markdownify }}
+            {{/*  {{ .Content | markdownify }}  */}}
+            <h2 style="color: rgb(255, 255, 255, 0.8) !important;">{{ .Content | markdownify }}</h2>
         </div>
         <footer class="entry-footer" style="color: rgb(255, 255, 255, 0.8) !important;">
             {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
