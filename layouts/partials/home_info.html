@@ -6,18 +6,18 @@
               background-image: url('{{ .Image }}');
               background-size: cover;
               background-position: center;
-              padding: 6rem 1rem; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
-        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.5); pointer-events:none;"></div>
+              padding: 6rem 1rem; color: rgb(0, 0, 0); text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.2); pointer-events:none;"></div>
         <div style="max-width: 960px; margin: 0 auto; text-align: center; position:relative; z-index:1;">
-           <header class="entry-header">
-              <h1>{{ .Title | markdownify }}</h1>
-           </header>
-           <div class="entry-content">
-              {{ .Content | markdownify }}
-           </div>
-           <footer class="entry-footer">
-              {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
-           </footer>
+        <header class="entry-header" style="color: rgb(255, 255, 255, 0.8) !important;">
+            <h1 style="color: rgb(255, 255, 255, 0.8) !important;">{{ .Title | markdownify }}</h1>
+        </header>
+        <div class="entry-content" style="color: rgb(255, 255, 255, 0.8) !important;">
+            {{ .Content | markdownify }}
+        </div>
+        <footer class="entry-footer" style="color: rgb(255, 255, 255, 0.8) !important;">
+            {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+        </footer>
         </div>
     </div>
     {{- else }}
