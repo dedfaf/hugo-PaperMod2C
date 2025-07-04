@@ -282,13 +282,8 @@
 
 .toc details summary {
     cursor: zoom-in;
-<<<<<<< HEAD
-    margin-inline-start: 10px;
-    user-select: none;
-=======
     margin-inline-start: 20px;
     padding: 12px 0;
->>>>>>> dev-sidetoc
 }
 
 .toc details[open] summary {
@@ -313,15 +308,9 @@
 }
 
 .toc .inner {
-<<<<<<< HEAD
-    margin: 5px 20px 0;
-    padding: 0 10px;
-    opacity: 0.9;
-=======
     margin: 0 0 0 20px;
     padding: 0px 15px 15px 20px;
     font-size: 16px;
->>>>>>> dev-sidetoc
 }
 
 .toc li ul {
@@ -435,17 +424,4 @@ h6:hover .anchor {
 
 [dir="rtl"] .paginav .next {
     text-align: left;
-<<<<<<< HEAD
 }
-
-h1>a>svg {
-    display: inline;
-}
-
-img.in-text {
-    display: inline;
-    margin: auto;
-}
-=======
-}
->>>>>>> dev-sidetoc
