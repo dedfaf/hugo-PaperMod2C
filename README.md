@@ -38,7 +38,7 @@ params:
     textAbove: true
 ```
 
-And also, the top menu is aligned to the left (which I personally prefer).
+~~And also, the top menu is aligned to the left (which I personally prefer).~~ Reverted, simple personal preference changes should be implemented via overrides rather than modifying the theme.
 
 ## Install & Details
 
