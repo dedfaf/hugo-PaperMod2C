@@ -34,7 +34,7 @@
 }
 
 .home-info .entry-content {
-    --content-gap: 0.5rem;
+    --content-gap: 0.4rem;
     -webkit-line-clamp: unset;
     margin: 0;
 }
