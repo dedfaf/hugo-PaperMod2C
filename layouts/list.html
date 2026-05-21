@@ -55,9 +55,12 @@
 {{- range $index, $page := $paginator.Pages }}
 
 {{- $class := "post-entry" }}
+{{- $redirect := .Params.redirect }}
 
 {{- $user_preferred := or site.Params.disableSpecial1stPost site.Params.homeInfoParams }}
-{{- if (and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0) (not $user_preferred)) }}
+{{- if $redirect }}
+{{- $class = "redirect-entry" }}
+{{- else if (and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0) (not $user_preferred)) }}
 {{- $class = "first-entry" }}
 {{- else if $term }}
 {{- $class = "post-entry tag-entry" }}
@@ -89,7 +92,12 @@
     {{- partial "post_meta.html" . -}}
   </footer>
   {{- end }}
-  <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+  <a
+    class="entry-link"
+    aria-label="post link to {{ .Title | plainify }}"
+    href="{{ if $redirect }}{{ $redirect }}{{ else }}{{ .Permalink }}{{ end }}"
+    {{ if $redirect }}target="_blank" rel="noopener noreferrer"{{ end }}>
+  </a>
 </article>
 {{- end }}
 
