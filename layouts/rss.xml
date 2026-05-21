@@ -27,6 +27,7 @@
 {{- $pages = $pctx.Pages }}
 {{- end }}
 {{- $pages = where $pages "Params.hiddenInRss" "!=" true -}}
+{{- $pages = where $pages "Params.redirect" "==" nil -}}
 {{- $limit := site.Config.Services.RSS.Limit }}
 {{- if ge $limit 1 }}
 {{- $pages = $pages | first $limit }}
