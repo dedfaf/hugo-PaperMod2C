@@ -84,7 +84,11 @@
   </header>
   {{- if (ne (.Param "hideSummary") true) }}
   <div class="entry-content">
+    {{- if $redirect }}
+    <p>{{ i18n "redirect" (dict "Url" $redirect) }}</p>
+    {{- else }}
     <p>{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}</p>
+    {{- end }}
   </div>
   {{- end }}
   {{- if not (.Param "hideMeta") }}

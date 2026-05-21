@@ -31,3 +31,6 @@
 
 - id: code_copied
   translation: "已复制！"
+
+- id: redirect
+  translation: "转载自：{{.Url}}"
