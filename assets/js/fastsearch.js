@@ -77,22 +77,32 @@ const renderResults = (results) => {
     for (const result of results) {
         const li = document.createElement('li');
         const titleText = document.createTextNode(result.item.title);
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('width', '24');
-        svg.setAttribute('height', '24');
-        svg.setAttribute('viewBox', '0 0 24 24');
-        svg.setAttribute('fill', 'none');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('stroke-width', '2');
-        svg.setAttribute('stroke-linecap', 'round');
-        svg.setAttribute('stroke-linejoin', 'round');
-        svg.classList.add('feather', 'feather-chevrons-right');
+        var svg;
+        const isRedirect = Boolean(result.item.redirect);
 
-        svg.innerHTML = '<polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline>';
+        if (isRedirect) {
+            svg = document.createElement('span');
+            svg.classList.add('external-link-icon');
+        } else {
+            svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '20');
+            svg.setAttribute('height', '20');
+            svg.setAttribute('viewBox', '0 0 20 20');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('stroke-width', '2');
+            svg.setAttribute('stroke-linecap', 'round');
+            svg.setAttribute('stroke-linejoin', 'round');
+            svg.classList.add('feather', 'feather-chevrons-right');
+            svg.innerHTML = '<polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline>';
+        }
 
+        li.classList.add(isRedirect ? 'redirect' : 'original');
         const link = document.createElement('a');
         link.className = 'entry-link';
-        link.href = result.item.permalink;
+        link.href = isRedirect
+            ? result.item.redirect
+            : result.item.permalink;
         link.setAttribute('aria-label', result.item.title);
 
         li.appendChild(titleText);

@@ -16,9 +16,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--entry);
+    /* background: var(--entry); */
     transition: transform .25s ease;
     border: 1px solid var(--border);
+}
+
+.searchResults li.original {
+    background: var(--entry);
+}
+
+.searchResults li.redirect {
+    background: var(--redirect-entry);
 }
 
 .searchResults {
@@ -38,4 +46,18 @@
 .searchResults li .entry-link:focus {
     outline: 2px solid var(--secondary);
     outline-offset: -2px;
+}
+
+.external-link-icon {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    left: 2px;
+    background-color: currentColor;
+
+    -webkit-mask: url('/icons/external-link.svg') no-repeat center;
+    mask: url('/icons/external-link.svg') no-repeat center;
+
+    -webkit-mask-size: contain;
+    mask-size: contain;
 }

@@ -69,7 +69,13 @@
         <div class="archive-meta">
           {{- partial "post_meta.html" . -}}
         </div>
-        <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+        {{- $redirect := .Params.redirect }}
+        <a
+          class="entry-link"
+          aria-label="post link to {{ .Title | plainify }}"
+          href="{{ if $redirect }}{{ $redirect }}{{ else }}{{ .Permalink }}{{ end }}"
+          {{ if $redirect }}target="_blank" rel="noopener noreferrer"{{ end }}>
+        </a>
       </div>
       {{- end }}
       {{- end }}
