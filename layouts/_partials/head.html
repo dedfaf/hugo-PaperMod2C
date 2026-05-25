@@ -192,3 +192,12 @@
 {{- partial "templates/twitter_cards.html" . }}
 {{- partial "templates/schema_json.html" . }}
 {{- end -}}
+
+{{- /* Redirect Auto Jump */}}
+{{- if and .IsPage .Params.redirect }}
+{{- $redirect := .Params.redirect }}
+<meta http-equiv="refresh" content="0; url={{ $redirect }}">
+<script>
+location.replace("{{ $redirect }}");
+</script>
+{{- end -}}
