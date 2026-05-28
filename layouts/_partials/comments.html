@@ -2,7 +2,8 @@
 <h2>Comments: </h2>
 <script defer src="{{ .Site.Params.comment.server }}/comentario.js"></script>
 <comentario-comments
-    domain-id="{{ .Site.Params.comment.siteID }}"
-    css-override="false"
+  domain-id="{{ .Site.Params.comment.siteID }}"
+  no-font="true"
+  css-override="false"
 ></comentario-comments>
 {{- end -}}
