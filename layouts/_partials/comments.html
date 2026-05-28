@@ -1,3 +1,8 @@
-{{- /* Comments area start */ -}}
-{{- /* to add comments read => https://gohugo.io/content-management/comments/ */ -}}
-{{- /* Comments area end */ -}}
+{{ if .Site.Params.comment.enable }}
+<h2>Comments: </h2>
+<script defer src="{{ .Site.Params.comment.server }}/comentario.js"></script>
+<comentario-comments
+    domain-id="{{ .Site.Params.comment.siteID }}"
+    css-override="false"
+></comentario-comments>
+{{- end -}}
