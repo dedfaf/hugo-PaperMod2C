@@ -55,4 +55,19 @@
 </script>
 {{ end }}
 {{- end -}}
-{{ end }}
+<script>
+const observer = new MutationObserver(() => {
+    const placeholder = document.querySelector(".comentario-add-comment-placeholder");
+
+    if (placeholder) {
+        placeholder.textContent = "{{ .Site.Params.comment.placeholder }}";
+        observer.disconnect();
+    }
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+</script>
+{{- end }}
