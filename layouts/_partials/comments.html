@@ -2,6 +2,7 @@
   .Site.Params.comment.enable
   (ne .Params.comment.enable false)
 }}
+{{ $cssOverride := site.Params.comment.cssOverride }}
 <h2>Comments: </h2>
 <script defer src="{{ .Site.Params.comment.server }}/comentario.js"></script>
 {{- /* theme-toggle is enabled */}}
@@ -11,7 +12,7 @@
 <comentario-comments
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
-  css-override="false"
+  css-override={{ $cssOverride }}
   theme="dark"
 ></comentario-comments>
 {{- /* theme is dark */}}
@@ -19,7 +20,7 @@
 <comentario-comments
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
-  css-override="false"
+  css-override={{ $cssOverride }}
   theme="light"
 ></comentario-comments>
 {{- else }}
@@ -27,7 +28,7 @@
 <comentario-comments
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
-  css-override="false"
+  css-override={{ $cssOverride }}
 ></comentario-comments>
 <script>
   let theme;
