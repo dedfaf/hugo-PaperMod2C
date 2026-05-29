@@ -101,6 +101,24 @@
 {{- end }}
 
 {{- if (not site.Params.disableThemeToggle) }}
+{{ if site.Params.comment.enable }}
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+        const comentario = document.querySelector("comentario-comments");
+        if (comentario) {
+            comentario.setAttribute("theme", html.dataset.theme);
+        }
+    })
+</script>
+{{ else }}
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
         const html = document.querySelector("html");
@@ -112,8 +130,8 @@
             localStorage.setItem("pref-theme", 'dark');
         }
     })
-
 </script>
+{{ end }}
 {{- end }}
 
 {{- if (and (eq .Kind "page") (ne .Layout "archives") (ne .Layout "search") (.Param "ShowCodeCopyButtons")) }}

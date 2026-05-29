@@ -1,9 +1,57 @@
-{{ if .Site.Params.comment.enable }}
+{{ if and
+  .Site.Params.comment.enable
+  (ne .Params.comment.enable false)
+}}
 <h2>Comments: </h2>
 <script defer src="{{ .Site.Params.comment.server }}/comentario.js"></script>
+{{- /* theme-toggle is enabled */}}
+{{- if (not site.Params.disableThemeToggle) }}
+{{- /* theme is light */}}
+{{- if (eq site.Params.defaultTheme "light") }}
+<comentario-comments
+  domain-id="{{ .Site.Params.comment.siteID }}"
+  no-font="true"
+  css-override="false"
+  theme="dark"
+></comentario-comments>
+{{- /* theme is dark */}}
+{{- else if (eq site.Params.defaultTheme "dark") }}
+<comentario-comments
+  domain-id="{{ .Site.Params.comment.siteID }}"
+  no-font="true"
+  css-override="false"
+  theme="light"
+></comentario-comments>
+{{- else }}
+{{- /* theme is auto */}}
 <comentario-comments
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
   css-override="false"
 ></comentario-comments>
+<script>
+  let theme;
+  if (localStorage.getItem("pref-theme") === "dark") {
+      theme = 'dark';
+  } else if (localStorage.getItem("pref-theme") === "light") {
+      theme = 'light';
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      theme = 'dark';
+  } else {
+      theme = 'light';
+  }
+  const syncComentarioTheme = () => {
+      const comentario = document.querySelector("comentario-comments");
+      if (comentario) {
+          comentario.setAttribute("theme", theme);
+      }
+  };
+  if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", syncComentarioTheme);
+  } else {
+      syncComentarioTheme();
+  }
+</script>
+{{ end }}
 {{- end -}}
+{{ end }}
