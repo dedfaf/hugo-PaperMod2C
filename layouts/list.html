@@ -4,6 +4,19 @@
 {{- partial "index_profile.html" . }}
 {{- else }} {{/* if not profileMode */}}
 
+<!-- {{- if and .IsHome .Title }}
+<section class="home-header-shell">
+  <header class="page-header">
+    <h1>{{ .Title }}</h1>
+    {{- if .Description }}
+    <div class="post-description">
+      {{ .Description | markdownify }}
+    </div>
+    {{- end }}
+  </header>
+</section>
+{{- end }} -->
+
 {{- if not .IsHome | and .Title }}
 <header class="page-header">
   {{- partial "breadcrumbs.html" . }}
@@ -46,16 +59,55 @@
 {{- end }}
 
 {{- $paginator := .Paginate $pages }}
+{{- $enableHomeCommentAside := and .IsHome site.Params.comment.enable site.Params.comment.enableInHomePage }}
 
 {{- if and .IsHome site.Params.homeInfoParams (eq $paginator.PageNumber 1) }}
 {{- partial "home_info.html" . }}
 {{- end }}
 
 {{- $term := .Data.Term }}
+{{- $homeCategories := slice }}
+{{- if .IsHome }}
+{{- range $paginator.Pages }}
+{{- with .Params.categories }}
+{{- range . }}
+{{- $homeCategories = $homeCategories | append . }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- $homeCategories = sort (uniq $homeCategories) }}
+{{- end }}
+
+{{- if .IsHome }}
+<div class="home-main-layout{{ if $enableHomeCommentAside }} home-main-layout--with-comments{{ end }}">
+  <section class="home-posts-column">
+    {{- if or (gt (len $homeCategories) 0) $enableHomeCommentAside }}
+    <div class="home-list-toolbar">
+      {{- if gt (len $homeCategories) 0 }}
+      <div class="home-category-filter" aria-label="Category filters">
+        <button class="home-category-btn is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+        {{- range $homeCategories }}
+        <button class="home-category-btn" type="button" data-filter="{{ urlize . }}" aria-pressed="false">{{ . }}</button>
+        {{- end }}
+      </div>
+      {{- end }}
+      {{- if $enableHomeCommentAside }}
+      <button class="home-comments-toggle" type="button" aria-pressed="true" data-show-label="{{ i18n "show_comments_panel" }}" data-hide-label="{{ i18n "hide_comments_panel" }}">{{ i18n "hide_comments_panel" }}</button>
+      {{- end }}
+    </div>
+    {{- end }}
+{{- end }}
+
 {{- range $index, $page := $paginator.Pages }}
 
 {{- $class := "post-entry" }}
 {{- $redirect := .Params.redirect }}
+{{- $categoryKeys := slice }}
+{{- with .Params.categories }}
+{{- range . }}
+{{- $categoryKeys = $categoryKeys | append (urlize .) }}
+{{- end }}
+{{- end }}
 
 {{- $user_preferred := or site.Params.disableSpecial1stPost site.Params.homeInfoParams }}
 {{- if $redirect }}
@@ -66,7 +118,7 @@
 {{- $class = "post-entry tag-entry" }}
 {{- end }}
 
-<article class="{{ $class }}">
+<article class="{{ $class }}"{{ if $.IsHome }} data-categories="{{ delimit $categoryKeys "," }}"{{ end }}>
   {{- $isHidden := (.Param "cover.hiddenInList") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" false "isHidden" $isHidden) }}
   <header class="entry-header">
@@ -126,6 +178,64 @@
     {{- end }}
   </nav>
 </footer>
+{{- end }}
+
+{{- if .IsHome }}
+  </section>
+  {{- if $enableHomeCommentAside }}
+  <aside class="home-comments-column">
+  {{- partial "comments.html" . -}}
+  </aside>
+  {{- end }}
+</div>
+{{- if or (gt (len $homeCategories) 0) $enableHomeCommentAside }}
+<script>
+(() => {
+  const homeLayout = document.querySelector('.home-main-layout');
+  const listRoot = document.querySelector('.home-posts-column');
+  if (!homeLayout || !listRoot) {
+    return;
+  }
+
+  const commentsToggle = listRoot.querySelector('.home-comments-toggle');
+  if (commentsToggle) {
+    commentsToggle.addEventListener('click', () => {
+      const isHidden = homeLayout.classList.toggle('is-comments-hidden');
+      commentsToggle.setAttribute('aria-pressed', isHidden ? 'false' : 'true');
+      commentsToggle.textContent = isHidden
+        ? (commentsToggle.dataset.showLabel || '{{ i18n "show_comments_panel" }}')
+        : (commentsToggle.dataset.hideLabel || '{{ i18n "hide_comments_panel" }}');
+    });
+  }
+
+  const buttons = listRoot.querySelectorAll('.home-category-btn');
+  const entries = listRoot.querySelectorAll('article[data-categories]');
+  if (!buttons.length || !entries.length) {
+    return;
+  }
+
+  const setFilter = (filterValue) => {
+    entries.forEach((entry) => {
+      const categories = (entry.getAttribute('data-categories') || '')
+        .split(',')
+        .filter(Boolean);
+      const shouldShow = filterValue === 'all' || categories.includes(filterValue);
+      entry.hidden = !shouldShow;
+    });
+
+    buttons.forEach((button) => {
+      const isActive = button.dataset.filter === filterValue;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => setFilter(button.dataset.filter || 'all'));
+  });
+})();
+</script>
+{{- end }}
 {{- end }}
 
 {{- end }}{{/* end profileMode */}}

@@ -34,3 +34,9 @@
 
 - id: redirect
   translation: "转载自：{{.Url}}"
+
+- id: show_comments_panel
+  translation: "显示动态"
+
+- id: hide_comments_panel
+  translation: "隐藏动态"

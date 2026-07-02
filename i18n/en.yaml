@@ -34,3 +34,9 @@
 
 - id: redirect
   translation: "Forward from: {{.Url}}"
+
+- id: show_comments_panel
+  translation: "Show feeds"
+
+- id: hide_comments_panel
+  translation: "Hide feeds"

@@ -30,9 +30,33 @@
 }
 
 /* footer */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1120px) {
     .list .top-link {
         transform: translateY(-5rem);
+    }
+
+    .home-main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .home-main-layout--with-comments {
+        max-width: calc(var(--main-width) + var(--gap) * 2);
+        margin-inline: auto;
+    }
+
+    .home-list-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .home-posts-column,
+    .home-comments-column {
+        min-width: 0;
+    }
+
+    .home-comments-column {
+        position: static;
+        max-height: none;
+        overflow: visible;
     }
 }
 

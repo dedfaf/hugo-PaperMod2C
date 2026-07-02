@@ -3,7 +3,11 @@
   (ne .Params.comment.enable false)
 }}
 {{ $cssOverride := site.Params.comment.cssOverride }}
-<h2>Comments: </h2>
+{{ $isHome := .IsHome }}
+{{ if not $isHome }}
+<hr>
+{{ end }}
+<h2 class="home-comments-title">Comments</h2>
 <script defer src="{{ .Site.Params.comment.server }}/comentario.js"></script>
 {{- /* theme-toggle is enabled */}}
 {{- if (not site.Params.disableThemeToggle) }}
@@ -13,6 +17,7 @@
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
   css-override={{ $cssOverride }}
+    {{ if $isHome }}page-id="/"{{ end }}
   theme="dark"
 ></comentario-comments>
 {{- /* theme is dark */}}
@@ -21,6 +26,7 @@
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
   css-override={{ $cssOverride }}
+    {{ if $isHome }}page-id="/"{{ end }}
   theme="light"
 ></comentario-comments>
 {{- else }}
@@ -29,7 +35,9 @@
   domain-id="{{ .Site.Params.comment.siteID }}"
   no-font="true"
   css-override={{ $cssOverride }}
+    {{ if $isHome }}page-id="/"{{ end }}
 ></comentario-comments>
+<!-- Theme toggle -->
 <script>
   let theme;
   if (localStorage.getItem("pref-theme") === "dark") {
@@ -55,6 +63,7 @@
 </script>
 {{ end }}
 {{- end -}}
+<!-- Replace input placeholder -->
 <script>
 const observer = new MutationObserver(() => {
     const placeholder = document.querySelector(".comentario-add-comment-placeholder");
