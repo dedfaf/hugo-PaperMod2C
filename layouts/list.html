@@ -4,19 +4,6 @@
 {{- partial "index_profile.html" . }}
 {{- else }} {{/* if not profileMode */}}
 
-<!-- {{- if and .IsHome .Title }}
-<section class="home-header-shell">
-  <header class="page-header">
-    <h1>{{ .Title }}</h1>
-    {{- if .Description }}
-    <div class="post-description">
-      {{ .Description | markdownify }}
-    </div>
-    {{- end }}
-  </header>
-</section>
-{{- end }} -->
-
 {{- if not .IsHome | and .Title }}
 <header class="page-header">
   {{- partial "breadcrumbs.html" . }}
@@ -58,17 +45,24 @@
 {{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true"  }}
 {{- end }}
 
-{{- $paginator := .Paginate $pages }}
+{{- $paginator := false }}
+{{- if not .IsHome }}
+{{- $paginator = .Paginate $pages }}
+{{- end }}
 {{- $enableHomeCommentAside := and .IsHome site.Params.comment.enable site.Params.comment.enableInHomePage }}
+{{- $renderPages := $pages }}
+{{- if not .IsHome }}
+{{- $renderPages = $paginator.Pages }}
+{{- end }}
 
-{{- if and .IsHome site.Params.homeInfoParams (eq $paginator.PageNumber 1) }}
+{{- if and .IsHome site.Params.homeInfoParams }}
 {{- partial "home_info.html" . }}
 {{- end }}
 
 {{- $term := .Data.Term }}
 {{- $homeCategories := slice }}
 {{- if .IsHome }}
-{{- range $paginator.Pages }}
+{{- range $renderPages }}
 {{- with .Params.categories }}
 {{- range . }}
 {{- $homeCategories = $homeCategories | append . }}
@@ -98,7 +92,7 @@
     {{- end }}
 {{- end }}
 
-{{- range $index, $page := $paginator.Pages }}
+{{- range $index, $page := $renderPages }}
 
 {{- $class := "post-entry" }}
 {{- $redirect := .Params.redirect }}
@@ -112,7 +106,7 @@
 {{- $user_preferred := or site.Params.disableSpecial1stPost site.Params.homeInfoParams }}
 {{- if $redirect }}
 {{- $class = "redirect-entry" }}
-{{- else if (and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0) (not $user_preferred)) }}
+{{- else if (and $.IsHome (eq $index 0) (not $user_preferred)) }}
 {{- $class = "first-entry" }}
 {{- else if $term }}
 {{- $class = "post-entry tag-entry" }}
@@ -157,7 +151,7 @@
 </article>
 {{- end }}
 
-{{- if gt $paginator.TotalPages 1 }}
+{{- if and (not .IsHome) (gt $paginator.TotalPages 1) }}
 <footer class="page-footer">
   <nav class="pagination">
     {{- if $paginator.HasPrev }}
@@ -180,6 +174,16 @@
 </footer>
 {{- end }}
 
+{{- if and .IsHome (gt (len $renderPages) 10) }}
+<footer class="page-footer home-page-footer" data-home-pagination>
+  <nav class="pagination" aria-label="Home pagination">
+    <button class="prev" type="button" data-page-action="prev" aria-label="{{ i18n "prev_page" }}">«&nbsp;{{ i18n "prev_page" }}&nbsp;</button>
+    <span class="home-page-status" data-page-status>1/1</span>
+    <button class="next" type="button" data-page-action="next" aria-label="{{ i18n "next_page" }}">{{ i18n "next_page" }}&nbsp;»</button>
+  </nav>
+</footer>
+{{- end }}
+
 {{- if .IsHome }}
   </section>
   {{- if $enableHomeCommentAside }}
@@ -188,7 +192,7 @@
   </aside>
   {{- end }}
 </div>
-{{- if or (gt (len $homeCategories) 0) $enableHomeCommentAside }}
+{{- if .IsHome }}
 <script>
 (() => {
   const homeLayout = document.querySelector('.home-main-layout');
@@ -209,30 +213,104 @@
   }
 
   const buttons = listRoot.querySelectorAll('.home-category-btn');
-  const entries = listRoot.querySelectorAll('article[data-categories]');
-  if (!buttons.length || !entries.length) {
+  const entries = Array.from(listRoot.querySelectorAll('article[data-categories]'));
+  if (!entries.length) {
     return;
   }
 
-  const setFilter = (filterValue) => {
-    entries.forEach((entry) => {
+  const pagerRoot = document.querySelector('[data-home-pagination]');
+  const prevButton = pagerRoot ? pagerRoot.querySelector('[data-page-action="prev"]') : null;
+  const nextButton = pagerRoot ? pagerRoot.querySelector('[data-page-action="next"]') : null;
+  const statusNode = pagerRoot ? pagerRoot.querySelector('[data-page-status]') : null;
+
+  const itemsPerPage = 10;
+  let activeFilter = 'all';
+  let currentPage = 1;
+
+  const getMatchedEntries = (filterValue) => {
+    return entries.filter((entry) => {
       const categories = (entry.getAttribute('data-categories') || '')
         .split(',')
         .filter(Boolean);
-      const shouldShow = filterValue === 'all' || categories.includes(filterValue);
-      entry.hidden = !shouldShow;
-    });
-
-    buttons.forEach((button) => {
-      const isActive = button.dataset.filter === filterValue;
-      button.classList.toggle('is-active', isActive);
-      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      return filterValue === 'all' || categories.includes(filterValue);
     });
   };
 
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => setFilter(button.dataset.filter || 'all'));
-  });
+  const renderEntries = () => {
+    const matchedEntries = getMatchedEntries(activeFilter);
+    const totalPages = Math.max(1, Math.ceil(matchedEntries.length / itemsPerPage));
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const visibleEntries = new Set(matchedEntries.slice(start, end));
+
+    entries.forEach((entry) => {
+      entry.hidden = !visibleEntries.has(entry);
+    });
+
+    if (statusNode) {
+      statusNode.textContent = matchedEntries.length ? `${currentPage}/${totalPages}` : '0/0';
+    }
+
+    if (prevButton) {
+      prevButton.disabled = currentPage <= 1 || matchedEntries.length === 0;
+    }
+
+    if (nextButton) {
+      nextButton.disabled = currentPage >= totalPages || matchedEntries.length === 0;
+    }
+
+    if (pagerRoot) {
+      pagerRoot.hidden = matchedEntries.length <= itemsPerPage;
+    }
+  };
+
+  const setFilter = (filterValue) => {
+    activeFilter = filterValue;
+    currentPage = 1;
+
+    if (buttons.length) {
+      buttons.forEach((button) => {
+        const isActive = button.dataset.filter === filterValue;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+
+    renderEntries();
+  };
+
+  if (buttons.length) {
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => setFilter(button.dataset.filter || 'all'));
+    });
+  }
+
+  if (prevButton) {
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage -= 1;
+        renderEntries();
+      }
+    });
+  }
+
+  if (nextButton) {
+    nextButton.addEventListener('click', () => {
+      const matchedEntries = getMatchedEntries(activeFilter);
+      const totalPages = Math.max(1, Math.ceil(matchedEntries.length / itemsPerPage));
+      if (currentPage < totalPages) {
+        currentPage += 1;
+        renderEntries();
+      }
+    });
+  }
+
+  renderEntries();
 })();
 </script>
 {{- end }}

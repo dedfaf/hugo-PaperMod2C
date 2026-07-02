@@ -21,6 +21,7 @@
 
 .pagination {
     display: flex;
+    align-items: center;
 }
 
 .pagination a {
@@ -32,8 +33,34 @@
     padding: 0 16px;
 }
 
+.pagination button {
+    color: var(--theme);
+    font-size: 13px;
+    line-height: 36px;
+    background: var(--primary);
+    border-radius: calc(36px / 2);
+    padding: 0 16px;
+    border: 0;
+}
+
+.pagination button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .pagination .next {
-    margin-inline-start: auto;
+    margin: left auto;
+}
+
+.home-page-status {
+    margin: 0 auto;
+    color: var(--secondary);
+    font-size: 13px;
+    padding: 0 8px;
+}
+
+.home-page-footer[hidden] {
+    display: none;
 }
 
 .home-info-bg {
@@ -125,6 +152,10 @@
     color: var(--theme);
     background: var(--primary);
     border-color: var(--primary);
+}
+
+.home-posts-column article[hidden] {
+    display: none;
 }
 
 .home-comments-toggle {
