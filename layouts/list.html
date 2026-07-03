@@ -213,10 +213,27 @@
   }
 
   const buttons = listRoot.querySelectorAll('.home-category-btn');
+  const categoryFilter = listRoot.querySelector('.home-category-filter');
   const entries = Array.from(listRoot.querySelectorAll('article[data-categories]'));
   if (!entries.length) {
     return;
   }
+
+  const updateCategoryIndicator = () => {
+    if (!categoryFilter || !buttons.length) {
+      return;
+    }
+
+    const activeButton = listRoot.querySelector('.home-category-btn.is-active');
+    if (!activeButton) {
+      return;
+    }
+
+    const filterRect = categoryFilter.getBoundingClientRect();
+    const activeRect = activeButton.getBoundingClientRect();
+    categoryFilter.style.setProperty('--active-indicator-x', `${activeRect.left - filterRect.left}px`);
+    categoryFilter.style.setProperty('--active-indicator-width', `${activeRect.width}px`);
+  };
 
   const pagerRoot = document.querySelector('[data-home-pagination]');
   const prevButton = pagerRoot ? pagerRoot.querySelector('[data-page-action="prev"]') : null;
@@ -279,6 +296,8 @@
         button.classList.toggle('is-active', isActive);
         button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
+
+      updateCategoryIndicator();
     }
 
     renderEntries();
@@ -308,6 +327,11 @@
         renderEntries();
       }
     });
+  }
+
+  if (categoryFilter && buttons.length) {
+    window.addEventListener('resize', updateCategoryIndicator);
+    updateCategoryIndicator();
   }
 
   renderEntries();
