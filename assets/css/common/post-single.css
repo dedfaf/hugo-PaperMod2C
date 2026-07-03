@@ -7,6 +7,10 @@
     font-size: 40px;
 }
 
+.post-single {
+    position: relative;
+}
+
 .post-description {
     margin-top: 10px;
 }
@@ -45,8 +49,19 @@
     margin: auto 3px;
 }
 
-.post-meta a,
-.toc a:hover {
+.post-meta a {
+    text-underline-offset: 0.3rem;
+    text-decoration: underline;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .toc a:hover {
+        text-underline-offset: 0.3rem;
+        text-decoration: underline;
+    }
+}
+
+.toc a:focus-visible {
     text-underline-offset: 0.3rem;
     text-decoration: underline;
 }
@@ -277,4 +292,33 @@ details li ul {
 
 h1>a>svg {
     display: inline;
+}
+
+@media screen and (max-width: 1346px) and (min-width: 1023px) {
+    .main.page.toc-wide-layout-page {
+        max-width: calc(var(--article-width) + var(--toc-width) + var(--gap) * 3);
+    }
+
+    .main.page .post-single.toc-wide-layout {
+        margin-left: calc(var(--toc-width) + var(--gap));
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .main.page .toc-container:not(.wide) {
+        position: sticky;
+        top: var(--gap);
+        z-index: 2;
+    }
+}
+
+@media screen and (max-width: 1022px) {
+    .main.page .toc-container:not(.wide) {
+        position: sticky;
+        top: var(--gap);
+        z-index: 2;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
 }

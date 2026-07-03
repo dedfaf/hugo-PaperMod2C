@@ -121,11 +121,26 @@
 
     function checkTocPosition() {
         const width = document.body.scrollWidth;
+        const tocContainer = document.getElementById("toc-container");
+        const postSingle = document.querySelector(".post-single");
+        const pageMain = document.querySelector(".main.page");
+        const isWide = width - main - toc - (gap * 3) > 0;
 
-        if (width - main - (toc * 2) - (gap * 4) > 0) {
-            document.getElementById("toc-container").classList.add("wide");
-        } else {
-            document.getElementById("toc-container").classList.remove("wide");
+        // Keep side TOC as long as one sidebar lane can fit beside article content.
+        if (tocContainer) {
+            if (isWide) {
+                tocContainer.classList.add("wide");
+            } else {
+                tocContainer.classList.remove("wide");
+            }
+        }
+
+        if (postSingle) {
+            postSingle.classList.toggle("toc-wide-layout", isWide);
+        }
+
+        if (pageMain) {
+            pageMain.classList.toggle("toc-wide-layout-page", isWide);
         }
     }
 
